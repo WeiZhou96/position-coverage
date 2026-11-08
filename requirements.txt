@@ -1,0 +1,9 @@
+torch>=2.5
+transformers==5.2.0
+accelerate>=1.0
+numpy
+scipy
+scikit-learn
+pyyaml
+pillow
+pytest

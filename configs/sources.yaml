@@ -1,0 +1,47 @@
+# Data sources. Paths are relative to the repository root; see README for downloads.
+seed: 20261102
+image_root:                       # materialised images (only those used by pairs)
+  clevr: data/images/clevr
+  coco: data/images/coco
+sizes:                            # per pattern (presence) or per cell (count)
+  presence: {main: 400, pilot: 25}
+  count: {main: 100, pilot: 11}
+subsample: {ter_full: 0.2, bin_partial: 0.2}
+size_overrides: {}
+
+clevr:
+  zip: data/raw/CLEVR_v1.0.zip
+  scenes_member: CLEVR_v1.0/scenes/CLEVR_val_scenes.json
+  images_prefix: CLEVR_v1.0/images/val/
+  prevalence_range: [0.30, 0.60]  # presence descriptors outside this range are dropped by build_items
+  presence_descriptors:
+    - {name: red_object, spec: {color: red}, singular: a red object, plural: red objects}
+    - {name: cyan_object, spec: {color: cyan}, singular: a cyan object, plural: cyan objects}
+    - {name: large_metal_cylinder, spec: {size: large, material: metal, shape: cylinder}, singular: a large metal cylinder, plural: large metal cylinders}
+    - {name: small_rubber_sphere, spec: {size: small, material: rubber, shape: sphere}, singular: a small rubber sphere, plural: small rubber spheres}
+    - {name: large_red_object, spec: {size: large, color: red}, singular: a large red object, plural: large red objects}
+  count_descriptors:
+    - {name: cylinders, spec: {shape: cylinder}, singular: a cylinder, plural: cylinders}
+    - {name: red_objects, spec: {color: red}, singular: a red object, plural: red objects}
+    - {name: metal_spheres, spec: {material: metal, shape: sphere}, singular: a metal sphere, plural: metal spheres}
+
+coco:
+  annotations_zip: data/raw/coco2017/annotations_trainval2017.zip
+  annotations_dir: data/raw/coco2017/annotations
+  instances_json: data/raw/coco2017/annotations/instances_{split}2017.json
+  captions_json: data/raw/coco2017/annotations/captions_{split}2017.json
+  image_zips: {train: data/raw/coco2017/train2017.zip, val: data/raw/coco2017/val2017.zip}
+  splits: [train, val]
+  min_area_frac: 0.01
+  neg_pool_size: 20000
+  categories:
+    - {name: dog, synonyms: [puppy, puppies, pup], singular: a dog, plural: dogs}
+    - {name: horse, synonyms: [pony, ponies, foal, stallion, mare], singular: a horse, plural: horses}
+    - {name: bus, synonyms: [busses], singular: a bus, plural: buses}
+    - {name: train, synonyms: [locomotive, railcar], singular: a train, plural: trains}
+    - {name: umbrella, synonyms: [parasol], singular: an umbrella, plural: umbrellas}
+    - {name: pizza, synonyms: [], singular: a pizza, plural: pizzas}
+    - {name: clock, synonyms: [], singular: a clock, plural: clocks}
+    - {name: bicycle, synonyms: [bike, cycle], singular: a bicycle, plural: bicycles}
+    - {name: elephant, synonyms: [], singular: an elephant, plural: elephants}
+    - {name: giraffe, synonyms: [], singular: a giraffe, plural: giraffes}
