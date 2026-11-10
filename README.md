@@ -1,10 +1,11 @@
 # Position Coverage in Multi-Image Vision-Language Models
 
-Code for *Position Coverage: Why Multi-Image Vision-Language Models Check Only the First and Last Images*.
+Code for *Position Coverage: Why Multi-Image Vision-Language Models Favor the First and Last Images*.
 
-Multi-image vision-language models read every image correctly but lose accuracy when a single forward pass must
-combine per-image evidence into a set-level verdict ("Do all six images contain X?"). After fine-tuning on
-two-image questions they check only the first and last images. The repository contains the data builders, LoRA
+Multi-image vision-language models read nearly every image correctly but lose accuracy when a single forward pass
+must combine per-image evidence into a set-level verdict ("Do all six images contain X?"). Off-the-shelf models
+favor the first and last images, and after fine-tuning on two-image questions they largely ignore a missing object
+in between. The repository contains the data builders, LoRA
 training, first-token scoring, the reading-referenced decomposition, and every analysis behind the paper's tables
 and figures.
 
