@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <strong>In controlled training, models learn to check the positions at which evidence decides the answer.</strong>
+  <strong>Fine-tuned models check the image positions at which evidence decided their training answers.</strong>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/fig_concept.png" width="1000" alt="Concept: two-image and edge-decisive training cover the first and last positions; training with decisive interior evidence restores interior checking.">
+  <img src="assets/fig_concept.png" width="1000" alt="Concept: two-image and edge-decisive training cover only the first and last positions; training that covers interior positions restores interior checking.">
 </p>
 
 <p align="center"><sub><strong>Reading every image is not enough.</strong> A model can identify the target in each image yet fail to combine those readings into a set-level answer. Schematic overview; measured outputs follow below.</sub></p>
@@ -38,7 +38,7 @@
 - **The failure is aggregation.** On six-image items with one differing image, Qwen3-VL-8B loses **12.6 points** relative to its in-context reading reference; two-image fine-tuning increases that loss to **15.0 points** despite better per-image reading.
 - **The loss is positional.** Off-the-shelf models with 8 to 32 billion parameters detect a missing object better in the first and last images than in interior ones. After two-image fine-tuning, Qwen3-VL-8B detects a missing object at six images in **58%** of items when it is first and **35%** when it is last, but in only **2–8%** when it sits in slots 2–4.
 - **Longer inputs alone do not restore interior checking.** Qwen's interior AUROC is **0.840** with three-image edge-decisive training, **0.841** with 2-img, and **0.957** with 2+3-img, averaged over image counts four through six.
-- **Coverage transfers across image counts.** Training with two- and four-image items reaches **0.959** interior AUROC and **0.988** at the untrained three-image count; the small-dose design uses **384** three-image items and recovers **62%** of the interior AUROC gain.
+- **Coverage transfers across image counts.** Training with two- and four-image items reaches **0.959** interior AUROC and **0.988** at the untrained three-image count; the small-dose design keeps **384** three-image items, about one eighth, and recovers **62%** of the interior AUROC gain.
 - **The effect replicates on held-out images.** Interior coverage improves interior AUROC by **0.106**, **0.103**, and **0.200** for Qwen3-VL, InternVL3.5, and Gemma 3, respectively, on images evaluated once.
 
 ## Study design
@@ -46,24 +46,24 @@
 The task is set verification: given several images and a target description such as “a large metal cylinder”, decide whether a set predicate holds, namely **ALL**, **ANY**, **ONE**, **NONE**, or **ATLEAST2** of the images contain the target. The evaluation grid rotates the same images through every slot. ATLEAST2 is never trained.
 
 <p align="center">
-  <img src="assets/fig_framework.png" width="1000" alt="Measurement framework: reading-referenced decomposition, position-resolved AUROC, and training designs that separate image count from decisive-position coverage.">
+  <img src="assets/fig_framework.png" width="1000" alt="Measurement framework: reading-referenced decomposition, position-resolved AUROC, and training designs that separate image count from position coverage.">
 </p>
 
 Three complementary measurements make the positional failure visible:
 
 1. **Reference each model to its own readings.** Isolated and in-context per-image readings define ideal-integration references, *E*<sub>iso</sub> and *E*<sub>ctx</sub>. Correct facts supplied as text test language-side reasoning. Reading loss is *E*<sub>iso</sub> − *E*<sub>ctx</sub>; aggregation loss is *E*<sub>ctx</sub> − *M*, where *M* is direct-answer accuracy.
 2. **Resolve discrimination by position.** Compare scores for all-present sets with scores for sets missing the target at each slot. AUROC is threshold free, so a shift in the model's overall tendency to answer “yes” cannot masquerade as blindness; **GAP = first/last AUROC − interior AUROC** measures the edge preference.
-3. **Control where evidence can decide the answer.** A slot is decisive if flipping its fact changes the answer. Training designs hold the item budget and optimization schedule fixed while changing image count, interior coverage, or supervision format.
+3. **Control which positions the training data cover.** A slot is decisive in an item if flipping its fact changes the answer. A training set **covers** a slot if it contains two items whose facts differ only at that slot and whose answers differ; a slot that is not covered can be ignored without making any training answer wrong. Training designs hold the item budget and optimization schedule fixed while changing image count, interior coverage, or supervision format.
 
-The coverage comparison uses **11,600 training items per design**, with the same optimization schedule. Edge-decisive training differs from 2+3-img only by cyclically reordering selected three-image items, preserving images, counts, and answers.
+The coverage comparison uses **11,600 training items per design** and the same number of optimization steps, so the designs differ in what their items show, not in how many items or updates the model receives. Edge-decisive training is identical to 2+3-img except that 600 three-image items are moved to another cyclic rotation of the same images (facts 101 for ALL, 010 for ANY and NONE, and 010, 011, or 110 for ONE). Images, counts, and answers are unchanged, yet every three-image answer can now be computed from the first and last images alone, so the middle slot is not covered; `scripts/p1_build.py` asserts this on the built training set.
 
-| Paper design | Two-image / multi-image items | What changes | Decisive positions | Run prefix |
+| Paper design | Two-image / multi-image items | What changes | Covered positions | Run prefix |
 |---|---:|---|---|---|
 | 2-img | 11,600 / — | Reference design | First, last | `A` |
 | 2+3 edge-decisive | 8,400 / 3,200 | Three-image inputs; interior coverage removed by reordering | First, last | `A3edge` |
 | 2+3-img | 8,400 / 3,200 | Three-image inputs with interior coverage | First, interior, last | `A23` |
 | 2+4-img | 8,400 / 3,200 | Four-image inputs with interior coverage; no three-image training | First, interior, last | `A24` |
-| 2+3 (1/8) | 11,216 / 384 | Small dose of three-image items | First, interior, last | `A23q` |
+| 2+3 (1/8) | 11,216 / 384 | About one eighth of the three-image items | First, interior, last | `A23q` |
 
 ## Results
 
@@ -81,7 +81,7 @@ For the two-image Qwen model, **94%** of items with an interior image missing ha
   <img src="assets/fig_coverage.png" width="1000" alt="Controlled coverage results: edge-decisive training follows two-image training, while three- and four-image coverage improve interior AUROC; held-out contrasts confirm the effect.">
 </p>
 
-Three-image edge-decisive training follows the two-image reference. Interior-decisive training from either three or four images restores interior discrimination, including at image counts absent from training. The held-out contrasts confirm this distinction.
+Edge-decisive training shows the model the same three-image inputs as 2+3-img, yet follows the two-image reference: its interior AUROC stays at **0.840**, while its first- and last-slot discrimination is the highest of all designs, so the three-image items trained only the edges. Training that covers interior positions, from either three- or four-image items, restores interior discrimination, including at image counts absent from training. The held-out contrasts confirm this distinction.
 
 <p align="center">
   <img src="assets/coverage_by_slot.gif" width="960" alt="Detection rates by missing-image position as image count increases from 3 to 6, with all-present acceptance shown separately for four training designs.">
@@ -118,7 +118,7 @@ The fixed-rule example is shown alongside all **24** image groups. Across groups
   <img src="assets/fig_probe.png" width="1000" alt="Layer-wise linear probes at the answer position, probe-versus-answer AUROC, and attention ratios.">
 </p>
 
-Linear probes indicate that the larger part of the interior deficit arises upstream of the answer readout: less interior evidence is available at the answer position after two-image training. A smaller part is present but not used; attention to interior images does not explain the discrimination pattern.
+Linear probes on the hidden state at the answer position separate interior omissions less well after two-image training (**0.85–0.89** versus **0.93–0.95** with 2+3-img), so the deficit is not confined to the final read-out; the two-image models' own answers additionally fall **0.038–0.043** short of the probe. Attention to interior images does not track the effect.
 
 </details>
 
