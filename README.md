@@ -2,7 +2,7 @@
 <h3 align="center">Why Multi-Image Vision-Language Models<br>Favor the First and Last Images</h3>
 
 <p align="center">
-  Wei Zhou · Jian Chang · Cong Lou · Li Yang<br>
+  Wei Zhou · Jian Chang · Wenwei Xu · Cong Lou · Li Yang<br>
   <sub>School of Automation, Nanjing University of Science and Technology</sub>
 </p>
 
@@ -262,7 +262,7 @@ python -m pytest tests
 ```bibtex
 @misc{zhou2026positioncoverage,
   title = {Position Coverage: Why Multi-Image Vision-Language Models Favor the First and Last Images},
-  author = {Zhou, Wei and Chang, Jian and Lou, Cong and Yang, Li},
+  author = {Zhou, Wei and Chang, Jian and Xu, Wenwei and Lou, Cong and Yang, Li},
   year = {2026},
   howpublished = {\url{https://github.com/WeiZhou96/position-coverage}}
 }
