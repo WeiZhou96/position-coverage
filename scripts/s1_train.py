@@ -223,7 +223,7 @@ def main():
         enc = sc.encode(reqs)
         if args.arm == "Dself":
             tgt = [(tuple(teach[it["item_id"]][1]["read"]), teach[it["item_id"]][1]["p_yes"] > 0.5) for it in batch]
-            if args.answer_from_reads:              # E3 contingency arm Dself23p (PREDICTIONS_E3.md, amendment)
+            if args.answer_from_reads:              # E3 contingency arm Dself23p (amendment to the preregistered plan)
                 tgt = [(v, e3.answer(it["predicate"], v) if it["predicate"] in e3.OPS
                         else logic.answer(it["predicate"], v[0], v[1])) for it, (v, _) in zip(batch, tgt)]
         else:

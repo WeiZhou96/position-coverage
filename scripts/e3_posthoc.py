@@ -1,6 +1,6 @@
 """Analyses after the E3 verdicts (report 10.13). Nothing here changes a pre-registered verdict.
 
-1. H9, S1 part (completes the pre-registered operationalisation). PREDICTIONS_E3.md defines H9 on the COCO part of
+1. H9, S1 part (completes the pre-registered operationalisation). The preregistered analysis plan defines H9 on the COCO part of
    the S1 evaluation set and of the E3 grid; the frozen scripts/e3_analyze.py uses only the E3 COCO groups. Here the
    same contrasts (Aclevr - A, direct; Dselfclevr - Dself, stated) on the S1 COCO items: cell-balanced accuracy,
    mean over the COCO groups of ev_main and ev_3img (held-out templates reported separately); cluster bootstrap and
