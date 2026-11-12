@@ -143,6 +143,7 @@ Off-the-shelf models with **24–32 billion parameters** retain the positional a
 | `scripts/` | Data builders, training, evaluation, analyses (below) |
 | `tests/` | Unit tests for the predicate logic and the null model |
 | `assets/` | Paper figures and animations of measured outputs |
+| `LICENSE` | MIT License |
 
 ## Setup
 
@@ -271,3 +272,7 @@ python -m pytest tests
 ## Acknowledgments and data
 
 The displayed scene thumbnails are from **CLEVR** (Johnson et al., CVPR 2017), licensed under **CC BY 4.0**; they have been resized and arranged for visualization. The study also uses **COCO 2017** and **Visual Haystacks** (Wu et al., ICLR 2025). We thank the dataset and model authors. The datasets themselves are not distributed with this repository.
+
+## License
+
+The code is released under the [MIT License](LICENSE). Datasets, model weights, and the CLEVR thumbnails shown in the figures remain under their own licenses.
